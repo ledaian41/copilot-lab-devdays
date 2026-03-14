@@ -1,0 +1,14 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.cs]
+dotnet_diagnostic.IDE0059.severity = warning  # Unused variables
+dotnet_diagnostic.IDE0060.severity = warning  # Unused parameters
+dotnet_diagnostic.IDE0079.severity = warning  # Remove unnecessary await
+dotnet_diagnostic.CA2007.severity = warning  # Use ConfigureAwait on await
+dotnet_diagnostic.CA1849.severity = warning  # Async methods should return Task
