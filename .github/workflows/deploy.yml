@@ -22,17 +22,17 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-      
+
       - name: Build Blazor App
         run: |
           cd SocOps
           dotnet publish -c Release -o ../publish
-      
+
       - name: Prepare deployment
         run: |
           # Create _site directory
@@ -45,17 +45,17 @@ jobs:
           cp -r publish/wwwroot/* ./_site/app/
           
           # Fix base href for GitHub Pages subdirectory
-          sed -i 's|<base href="/" />|<base href="/agent-lab-dotnet/app/" />|g' ./_site/app/index.html
+          sed -i 's|<base href="/" />|<base href="/copilot-lab-devdays/app/" />|g' ./_site/app/index.html
           
           # Prevent Jekyll processing
           touch ./_site/.nojekyll
-      
+
       - uses: actions/configure-pages@v4
-      
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
-      
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
