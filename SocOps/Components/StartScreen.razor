@@ -1,5 +1,57 @@
-<div class="flex flex-col items-center justify-center min-h-full p-6 bg-gray-50">
-    <div class="text-center max-w-sm">
+@using SocOps.Models
+@using SocOps.Services
+@using SocOps.Data
+@inject BingoGameService GameService
+
+<div class="flex flex-col items-center justify-center min-h-full p-6 bg-gray-50 relative overflow-hidden">
+    <!-- Coffee bean background pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="10" r="2" fill="var(--coffee-brown)" />
+            <circle cx="30" cy="20" r="2" fill="var(--coffee-brown)" />
+            <circle cx="50" cy="15" r="2" fill="var(--coffee-brown)" />
+            <circle cx="70" cy="25" r="2" fill="var(--coffee-brown)" />
+            <circle cx="90" cy="10" r="2" fill="var(--coffee-brown)" />
+            <circle cx="20" cy="40" r="2" fill="var(--coffee-brown)" />
+            <circle cx="40" cy="50" r="2" fill="var(--coffee-brown)" />
+            <circle cx="60" cy="45" r="2" fill="var(--coffee-brown)" />
+            <circle cx="80" cy="55" r="2" fill="var(--coffee-brown)" />
+            <circle cx="15" cy="70" r="2" fill="var(--coffee-brown)" />
+            <circle cx="35" cy="75" r="2" fill="var(--coffee-brown)" />
+            <circle cx="55" cy="80" r="2" fill="var(--coffee-brown)" />
+            <circle cx="75" cy="70" r="2" fill="var(--coffee-brown)" />
+            <circle cx="5" cy="90" r="2" fill="var(--coffee-brown)" />
+            <circle cx="25" cy="85" r="2" fill="var(--coffee-brown)" />
+            <circle cx="45" cy="95" r="2" fill="var(--coffee-brown)" />
+            <circle cx="65" cy="90" r="2" fill="var(--coffee-brown)" />
+            <circle cx="85" cy="95" r="2" fill="var(--coffee-brown)" />
+        </svg>
+    </div>
+    <div class="text-center max-w-sm relative z-10">
+        <!-- Coffee mug icon with steam -->
+        <div class="mb-4 relative">
+            <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="mx-auto">
+                <!-- Mug -->
+                <ellipse cx="50" cy="70" rx="25" ry="15" fill="var(--coffee-cream)" stroke="var(--coffee-brown)" stroke-width="2"/>
+                <rect x="25" y="40" width="50" height="30" rx="5" fill="var(--coffee-cream)" stroke="var(--coffee-brown)" stroke-width="2"/>
+                <rect x="30" y="35" width="40" height="10" rx="5" fill="var(--coffee-cream)" stroke="var(--coffee-brown)" stroke-width="2"/>
+                <!-- Handle -->
+                <path d="M75 45 Q85 50 85 60 Q85 70 75 75" fill="none" stroke="var(--coffee-brown)" stroke-width="3"/>
+                <!-- Coffee -->
+                <rect x="30" y="50" width="40" height="20" fill="var(--coffee-brown)"/>
+            </svg>
+            <!-- Steam -->
+            <div class="absolute top-0 left-1/2 transform -translate-x-1/2">
+                <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 30 Q10 20 15 15 Q20 10 25 15 Q30 20 30 30" fill="none" stroke="var(--coffee-light-brown)" stroke-width="2" opacity="0.7" class="steam">
+                        <animate attributeName="stroke-dasharray" values="0,100;50,50;0,100" dur="2s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M5 35 Q5 25 10 20 Q15 15 20 20 Q25 25 25 35" fill="none" stroke="var(--coffee-light-brown)" stroke-width="2" opacity="0.5" class="steam-delay">
+                        <animate attributeName="stroke-dasharray" values="0,100;50,50;0,100" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                    </path>
+                </svg>
+            </div>
+        </div>
         <h1 class="text-4xl font-bold text-gray-900 mb-2">Soc Ops</h1>
         <p class="text-lg text-gray-600 mb-8">Social Bingo</p>
 
@@ -12,8 +64,21 @@
             </ul>
         </div>
 
+        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 mb-8">
+            <h2 class="font-semibold text-gray-800 mb-3">Choose a Game Mode</h2>
+            <div class="space-y-2">
+                @foreach (var mode in Modes)
+                {
+                    <label class="flex items-center">
+                        <input type="radio" name="mode" value="@mode" checked="@(SelectedMode == mode)" @onchange="() => SelectedMode = mode" class="mr-2" />
+                        <span class="text-gray-600">@GetModeDisplayName(mode)</span>
+                    </label>
+                }
+            </div>
+        </div>
+
         <button
-            @onclick="OnStart"
+            @onclick="() => OnStart.InvokeAsync((SelectedTheme, SelectedMode))"
             class="w-full bg-accent text-white font-semibold py-4 px-8 rounded-lg text-lg active:bg-accent-light transition-colors">
             Start Game
         </button>
@@ -22,5 +87,21 @@
 
 @code {
     [Parameter]
-    public EventCallback OnStart { get; set; }
+    public EventCallback<(string, GameMode)> OnStart { get; set; }
+
+    private string SelectedTheme { get; set; } = Questions.ThemedQuestions.Keys.First();
+    private List<string> Themes = Questions.ThemedQuestions.Keys.ToList();
+    private GameMode SelectedMode { get; set; } = GameMode.Bingo;
+    private List<GameMode> Modes = Enum.GetValues<GameMode>().ToList();
+
+    private string GetModeDisplayName(GameMode mode)
+    {
+        return mode switch
+        {
+            GameMode.Bingo => "Bingo",
+            GameMode.ScavengerHunt => "Scavenger Hunt",
+            GameMode.CardDeckShuffle => "Card Deck Shuffle",
+            _ => mode.ToString()
+        };
+    }
 }

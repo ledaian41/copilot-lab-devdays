@@ -26,9 +26,14 @@ public class BingoLogicService
     /// <summary>
     /// Generate a new 5x5 bingo board
     /// </summary>
-    public static List<BingoSquareData> GenerateBoard()
+    public static List<BingoSquareData> GenerateBoard(string theme)
     {
-        var shuffledQuestions = ShuffleArray(Questions.QuestionsList).Take(24).ToList();
+        if (!Questions.ThemedQuestions.ContainsKey(theme))
+        {
+            theme = Questions.ThemedQuestions.Keys.First(); // Default to first theme
+        }
+        var themeQuestions = Questions.ThemedQuestions[theme];
+        var shuffledQuestions = ShuffleArray(themeQuestions).Take(24).ToList();
         var board = new List<BingoSquareData>();
 
         int questionIndex = 0;
@@ -46,10 +51,11 @@ public class BingoLogicService
             }
             else
             {
+                var question = shuffledQuestions[questionIndex];
                 board.Add(new BingoSquareData
                 {
                     Id = i,
-                    Text = shuffledQuestions[questionIndex],
+                    Text = question,
                     IsMarked = false,
                     IsFreeSpace = false
                 });

@@ -25,13 +25,13 @@
 
     private string GetCssClasses()
     {
-        var baseClasses = "relative flex items-center justify-center p-1 text-center border border-gray-300 rounded transition-all duration-150 select-none min-h-[60px] text-xs leading-tight";
+        var baseClasses = "relative flex items-center justify-center p-1 text-center border border-[#8B4513] rounded transition-all duration-150 select-none min-h-[60px] text-xs leading-tight shadow-sm";
 
         var stateClasses = Square.IsMarked
             ? IsWinning
                 ? "bg-amber-200 border-amber-400 text-amber-900"
-                : "bg-marked border-marked-border text-green-800"
-            : "bg-white text-gray-700 active:bg-gray-100";
+                : "bg-[#90EE90] border-[#8B4513] text-green-800"
+            : "bg-[#FFFDD0] text-gray-700 active:bg-[#F5F5DC]";
 
         var freeSpaceClasses = Square.IsFreeSpace ? "font-bold text-sm" : "";
 

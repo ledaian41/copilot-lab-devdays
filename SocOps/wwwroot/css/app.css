@@ -6,8 +6,9 @@ body,
 }
 
 body {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'Georgia', serif;
     -webkit-tap-highlight-color: transparent;
+    background-color: var(--coffee-beige);
 }
 
 /* Tailwind-like utility classes */
@@ -51,25 +52,25 @@ body {
 .mx-auto { margin-left: auto; margin-right: auto; }
 
 .bg-white { background-color: #ffffff; }
-.bg-gray-50 { background-color: #f9fafb; }
-.bg-gray-100 { background-color: #f3f4f6; }
-.bg-amber-100 { background-color: #fef3c7; }
-.bg-amber-200 { background-color: #fde68a; }
-.bg-accent { background-color: #2563eb; }
-.bg-marked { background-color: #dcfce7; }
+.bg-gray-50 { background-color: var(--coffee-beige); }
+.bg-gray-100 { background-color: var(--coffee-cream); }
+.bg-amber-100 { background-color: var(--coffee-light-brown); }
+.bg-amber-200 { background-color: var(--coffee-soft-green); }
+.bg-accent { background-color: var(--coffee-brown); }
+.bg-marked { background-color: var(--coffee-soft-green); }
 .bg-black\/50 { background-color: rgba(0, 0, 0, 0.5); }
 
 .text-white { color: #ffffff; }
 .text-gray-500 { color: #6b7280; }
 .text-gray-600 { color: #4b5563; }
-.text-gray-700 { color: #374151; }
-.text-gray-800 { color: #1f2937; }
-.text-gray-900 { color: #111827; }
-.text-green-600 { color: #16a34a; }
-.text-green-800 { color: #166534; }
-.text-amber-500 { color: #f59e0b; }
-.text-amber-800 { color: #92400e; }
-.text-amber-900 { color: #78350f; }
+.text-gray-700 { color: var(--coffee-brown); }
+.text-gray-800 { color: var(--coffee-dark-brown); }
+.text-gray-900 { color: var(--coffee-dark-brown); }
+.text-green-600 { color: var(--coffee-soft-green); }
+.text-green-800 { color: var(--coffee-soft-green); }
+.text-amber-500 { color: var(--coffee-light-brown); }
+.text-amber-800 { color: var(--coffee-brown); }
+.text-amber-900 { color: var(--coffee-dark-brown); }
 
 .text-xs { font-size: 0.75rem; line-height: 1rem; }
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
@@ -162,6 +163,21 @@ button:disabled {
     animation: bounce 0.5s ease-out;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-\[fadeIn_0\.5s_ease-out\] {
+    animation: fadeIn 0.5s ease-out;
+}
+
 #blazor-error-ui {
     color-scheme: light only;
     background: lightyellow;
@@ -226,3 +242,18 @@ button:disabled {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+:root {
+    --coffee-beige: #F5F5DC;
+    --coffee-light-brown: #D2B48C;
+    --coffee-cream: #FFFDD0;
+    --coffee-soft-green: #90EE90;
+    --coffee-brown: #8B4513;
+    --coffee-dark-brown: #654321;
+}
+
+.parchment {
+    background-color: var(--coffee-cream);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size: 15px 15px;
+}

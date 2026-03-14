@@ -1,4 +1,5 @@
 using SocOps.Models;
+using SocOps.Data;
 using System.Text.Json;
 using Microsoft.JSInterop;
 
@@ -16,6 +17,7 @@ public class BingoGameService
     public BingoLine? WinningLine { get; private set; }
     public HashSet<int> WinningSquareIds => BingoLogicService.GetWinningSquareIds(WinningLine);
     public bool ShowBingoModal { get; private set; }
+    public GameMode CurrentMode { get; private set; } = GameMode.Bingo;
 
     public event Action? OnStateChanged;
 
@@ -29,9 +31,14 @@ public class BingoGameService
         await LoadGameStateAsync();
     }
 
-    public void StartGame()
+    public void StartGame(string? theme = null, GameMode mode = GameMode.Bingo)
     {
-        Board = BingoLogicService.GenerateBoard();
+        if (string.IsNullOrEmpty(theme))
+        {
+            theme = Questions.ThemedQuestions.Keys.First();
+        }
+        Board = BingoLogicService.GenerateBoard(theme);
+        CurrentMode = mode;
         WinningLine = null;
         CurrentGameState = GameState.Playing;
         ShowBingoModal = false;
@@ -43,13 +50,29 @@ public class BingoGameService
     {
         Board = BingoLogicService.ToggleSquare(Board, squareId);
 
-        // Check for bingo after toggling
-        if (WinningLine == null)
+        // Check for win after toggling
+        if (WinningLine == null && CurrentGameState != GameState.Bingo)
         {
-            var bingo = BingoLogicService.CheckBingo(Board);
-            if (bingo != null)
+            bool hasWon = false;
+            if (CurrentMode == GameMode.Bingo || CurrentMode == GameMode.CardDeckShuffle)
             {
-                WinningLine = bingo;
+                var bingo = BingoLogicService.CheckBingo(Board);
+                if (bingo != null)
+                {
+                    WinningLine = bingo;
+                    hasWon = true;
+                }
+            }
+            else if (CurrentMode == GameMode.ScavengerHunt)
+            {
+                if (Board.All(s => s.IsMarked))
+                {
+                    hasWon = true;
+                }
+            }
+
+            if (hasWon)
+            {
                 CurrentGameState = GameState.Bingo;
                 ShowBingoModal = true;
             }

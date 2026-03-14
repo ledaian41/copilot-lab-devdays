@@ -31,4 +31,9 @@ public static class Questions
         "has read a book this month",
         "knows sign language"
     };
+
+    public static readonly Dictionary<string, List<string>> ThemedQuestions = new()
+    {
+        ["Social"] = QuestionsList
+    };
 }
